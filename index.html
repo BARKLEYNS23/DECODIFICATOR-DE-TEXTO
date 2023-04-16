@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Encriptador de texto</title>
+    <style>
+      body {
+        background: #f1f1f1;
+        font-family: Arial, sans-serif;
+      }
+
+      #container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        background: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #4CAF50;
+        font-size: 36px;
+        margin-bottom: 30px;
+      }
+
+      #text-input {
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 2px solid #ccc;
+      }
+
+      #output-area {
+        display: none;
+        width: 100%;
+        padding: 10px;
+        font-size: 18px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 2px solid #ccc;
+        min-height: 100px;
+      }
+
+      #output-image {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
+
+      button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      button:hover {
+        background-color: #3e8e41;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h1>Encriptador de texto</h1>
+      <label for="text-input">Texto a encriptar:</label>
+      <input type="text" id="text-input" placeholder="Escribe aquí el texto a encriptar">
+      <div id="output-area">
+        <img id="output-image" src="" alt="Texto encriptado/desencriptado">
+      </div>
+      <button id="encrypt-button">Encriptar</button>
+      <button id="decrypt-button">Desencriptar</button>
+      <button id="copy-button">Copiar</button>
+    </div>
+    <script>
+      const encryptButton = document.getElementById("encrypt-button");
+      const decryptButton = document.getElementById("decrypt-button");
+      const copyButton = document.getElementById("copy-button");
+      const textInput = document.getElementById("text-input");
+      const outputArea = document.getElementById("output-area");
+      const outputImage = document.getElementById("output-image");
+
+      // Función para encriptar el texto
+      function encryptText(text) {
+        let result = "";
+        for (let i = 0; i < text.length; i++) {
+          const charCode = text.charCodeAt(i);
+          result += String.fromCharCode(charCode + 1);
+        }
+        return btoa(result);
+      }
+
+      // Función para desencriptar el texto
+      function decryptText(text) {
+        // Lógica de desencriptación
+        return atob(text);
+      }
+
+      // Función para mostrar el texto encriptado/desencriptado
+      function showOutput(text) {
+        outputArea.style.display = "block";
+        outputImage.src = `data:image/png;base64,${text}`;
+      }
+
+      encryptButton.addEventListener("click", () => {
+        const inputText = textInput.value;
+        const encryptedText = encryptText(inputText);
+        showOutput(encryptedText);
+      });
+
+      decryptButton.addEventListener("click", () => {
+        const encryptedText = outputImage.src.split(",")[1];
+        const decryptedText = decryptText(encryptedText);
+        textInput.value = decryptedText;
+      });
+
+      copyButton.addEventListener("click", () => {
+        const resultText = document.getElementById("output-image").getAttribute("src").split(",")[1];
+        navigator.clipboard.writeText(atob(resultText))
+          .then(() => {
+            alert("El texto se ha copiado al portapapeles");
+          })
+          .catch((error) => {
+            alert("Ha ocurrido un error al copiar el texto: " + error);
+          });
+      });
+      </script>
+</body>
+</html>
